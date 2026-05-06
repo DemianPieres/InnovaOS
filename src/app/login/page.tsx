@@ -73,9 +73,12 @@ function LoginForm() {
               id="email"
               type="email"
               autoComplete="email"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value.trim())}
               placeholder="vos@local.com"
             />
           </div>
@@ -92,14 +95,22 @@ function LoginForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="tenantSlug">
-              Slug del local <span className="text-muted-foreground">(opcional)</span>
+              Slug del local{" "}
+              <span className="text-muted-foreground">(recomendado)</span>
             </Label>
             <Input
               id="tenantSlug"
               value={tenantSlug}
               onChange={(e) => setTenantSlug(e.target.value)}
-              placeholder="cafe-prueba"
+              placeholder="cafe-valen"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
             />
+            <p className="text-xs text-muted-foreground">
+              Es el identificador del local. Lo encontrás en la URL pública:
+              /menu/<span className="font-mono">[slug]</span>
+            </p>
           </div>
 
           {error && (

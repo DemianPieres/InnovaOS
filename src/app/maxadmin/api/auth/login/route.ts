@@ -23,7 +23,12 @@ import { sleep } from "@/lib/utils";
 export const runtime = "nodejs";
 
 const LoginSchema = z.object({
-  email: z.string().email().max(200),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .email()
+    .max(200),
   password: z.string().min(1).max(200),
 });
 

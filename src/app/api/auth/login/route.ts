@@ -25,9 +25,21 @@ import { sleep } from "@/lib/utils";
 export const runtime = "nodejs";
 
 const LoginSchema = z.object({
-  email: z.string().email().max(200),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .email()
+    .max(200),
   password: z.string().min(1).max(200),
-  tenantSlug: z.string().min(1).max(120).optional(),
+  tenantSlug: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(1)
+    .max(120)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
 });
 
 /**
@@ -57,8 +69,21 @@ export async function POST(req: NextRequest) {
       tenantFilter = { tenantId: tenant._id };
     }
 
-    const user = await User.findOne({ email, ...tenantFilter });
-    if (!user || !user.active) {
+    const candidates = await User.find({ email, ...tenantFilter }).limit(5);
+    if (candidates.length === 0) {
+      await recordLoginAttempt({ ipAddress, email, context: "system", success: false });
+      await sleep(400);
+      throw Unauthorized("Credenciales inválidas.");
+    }
+    if (candidates.length > 1) {
+      await recordLoginAttempt({ ipAddress, email, context: "system", success: false });
+      await sleep(400);
+      throw Unauthorized(
+        "Tu email pertenece a varios locales. Indicá el slug del local en el formulario."
+      );
+    }
+    const user = candidates[0];
+    if (!user.active) {
       await recordLoginAttempt({ ipAddress, email, context: "system", success: false });
       await sleep(400);
       throw Unauthorized("Credenciales inválidas.");
