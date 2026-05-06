@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: innovaos
+    runtime: node
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: APP_JWT_SECRET
+        sync: false
+      - key: APP_JWT_EXPIRES_IN
+        value: 8h
+      - key: REFRESH_TOKEN_SECRET
+        sync: false
+      - key: REFRESH_TOKEN_EXPIRES_IN
+        value: 7d
+      - key: MAXADMIN_JWT_SECRET
+        sync: false
+      - key: MAXADMIN_JWT_EXPIRES_IN
+        value: 8h
+      - key: MAXADMIN_EMAIL
+        sync: false
+      - key: MAXADMIN_PASSWORD
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: WHATSAPP_API_TOKEN
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_WHATSAPP_FROM
+        sync: false
